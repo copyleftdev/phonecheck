@@ -1,0 +1,47 @@
+# Zig
+zig-out/
+zig-cache/
+.zig-cache/
+
+# Zig build artifacts
+zig-cache/
+.zig-cache/
+zig-out/
+*.o
+*.a
+
+# C++ build artifacts
+*.out
+*.d
+
+# Shared libraries (except our wrapper)
+lib/*.so
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+breaking_point_run.log
+breaking_point_analysis.txt
+
+# Test artifacts
+fuzz/findings/
+fuzz/bin/
+/tmp/
+
+# Temporary test files
+test_*.zig
+
+# Build outputs
+phonecheck
+*.tmp
+node_modules/
