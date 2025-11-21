@@ -3,7 +3,7 @@
 [![CI](https://github.com/copyleftdev/phonecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/copyleftdev/phonecheck/actions/workflows/ci.yml)
 [![Docker Build](https://github.com/copyleftdev/phonecheck/actions/workflows/docker.yml/badge.svg)](https://github.com/copyleftdev/phonecheck/actions/workflows/docker.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Zig](https://img.shields.io/badge/Zig-0.15.2-orange.svg)](https://ziglang.org/)
+[![Zig](https://img.shields.io/badge/Zig-0.13.0-orange.svg)](https://ziglang.org/)
 [![libphonenumber](https://img.shields.io/badge/libphonenumber-8.12.57-blue.svg)](https://github.com/google/libphonenumber)
 [![Production Ready](https://img.shields.io/badge/production-ready-brightgreen.svg)](docs/PRODUCTION_READINESS.md)
 

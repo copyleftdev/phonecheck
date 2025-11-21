@@ -11,8 +11,8 @@ RUN apt-get update && apt-get install -y \
     xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Zig
-ARG ZIG_VERSION=0.15.2
+# Install Zig (using latest stable release)
+ARG ZIG_VERSION=0.13.0
 RUN wget https://ziglang.org/download/${ZIG_VERSION}/zig-linux-x86_64-${ZIG_VERSION}.tar.xz \
     && tar -xf zig-linux-x86_64-${ZIG_VERSION}.tar.xz \
     && mv zig-linux-x86_64-${ZIG_VERSION} /usr/local/zig \
