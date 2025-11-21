@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Zig
+      uses: goto-bus-stop/setup-zig@v2
+      with:
+        version: 0.15.2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          g++ \
+          libphonenumber-dev \
+          libprotobuf-dev \
+          libicu-dev \
+          pkg-config
+
+    - name: Build C++ wrapper
+      run: ./build_wrapper.sh
+
+    - name: Build PhoneCheck
+      run: zig build
+
+    - name: Run tests
+      run: |
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/lib
+        zig build test
+
+    - name: Start server and test API
+      run: |
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/lib
+        ./zig-out/bin/phonecheck &
+        SERVER_PID=$!
+        sleep 3
+        
+        # Health check
+        curl -f http://localhost:8080/health || exit 1
+        
+        # Validation test
+        RESPONSE=$(curl -s -X POST http://localhost:8080/validate \
+          -H "Content-Type: application/json" \
+          -d '{"phone_number": "+14155552671"}')
+        
+        echo "$RESPONSE" | jq -e '.valid == true' || exit 1
+        
+        kill $SERVER_PID
+
+    - name: Check code formatting
+      run: zig fmt --check src/
+
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'

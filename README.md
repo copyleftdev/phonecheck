@@ -1,11 +1,11 @@
 # 📞 PhoneCheck - Expert-Level Phone Validation REST API
 
+[![CI](https://github.com/copyleftdev/phonecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/copyleftdev/phonecheck/actions/workflows/ci.yml)
+[![Docker Build](https://github.com/copyleftdev/phonecheck/actions/workflows/docker.yml/badge.svg)](https://github.com/copyleftdev/phonecheck/actions/workflows/docker.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Zig](https://img.shields.io/badge/Zig-0.15.2-orange.svg)](https://ziglang.org/)
 [![libphonenumber](https://img.shields.io/badge/libphonenumber-8.12.57-blue.svg)](https://github.com/google/libphonenumber)
 [![Production Ready](https://img.shields.io/badge/production-ready-brightgreen.svg)](docs/PRODUCTION_READINESS.md)
-[![Tests Passing](https://img.shields.io/badge/tests-passing-success.svg)](docs/TESTING.md)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](build.zig)
 
 A high-performance, production-ready REST API for phone number validation built with **Zig** and wrapping **Google's libphonenumber** C++ library.
 

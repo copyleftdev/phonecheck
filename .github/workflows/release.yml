@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Zig
+      uses: goto-bus-stop/setup-zig@v2
+      with:
+        version: 0.15.2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          g++ \
+          libphonenumber-dev \
+          libprotobuf-dev \
+          libicu-dev \
+          pkg-config
+
+    - name: Build C++ wrapper
+      run: ./build_wrapper.sh
+
+    - name: Build release binary
+      run: zig build -Doptimize=ReleaseFast
+
+    - name: Create tarball
+      run: |
+        mkdir -p release/phonecheck
+        cp zig-out/bin/phonecheck release/phonecheck/
+        cp lib/libphonenumber_wrapper.so release/phonecheck/
+        cp README.md LICENSE release/phonecheck/
+        cd release
+        tar -czf phonecheck-linux-x64.tar.gz phonecheck/
+        cd ..
+
+    - name: Generate release notes
+      run: |
+        echo "# PhoneCheck Release ${GITHUB_REF_NAME}" > RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        echo "## What's New" >> RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        echo "- Production-ready phone validation REST API" >> RELEASE_NOTES.md
+        echo "- 2,500+ req/s throughput" >> RELEASE_NOTES.md
+        echo "- Memory-safe Zig implementation" >> RELEASE_NOTES.md
+        echo "- Google libphonenumber integration" >> RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        echo "## Installation" >> RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        echo '```bash' >> RELEASE_NOTES.md
+        echo "tar -xzf phonecheck-linux-x64.tar.gz" >> RELEASE_NOTES.md
+        echo "cd phonecheck" >> RELEASE_NOTES.md
+        echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$(pwd)" >> RELEASE_NOTES.md
+        echo "./phonecheck" >> RELEASE_NOTES.md
+        echo '```' >> RELEASE_NOTES.md
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: release/phonecheck-linux-x64.tar.gz
+        body_path: RELEASE_NOTES.md
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
